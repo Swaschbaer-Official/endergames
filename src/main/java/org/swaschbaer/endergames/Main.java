@@ -10,6 +10,7 @@ import java.io.File;
 
 public final class Main extends JavaPlugin {
     private Initialize cloudnet;
+    public Boolean ingame;
     public String langstate;
     private static Main instance;
     private CustomConfigManager customConfigManager;

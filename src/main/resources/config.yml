@@ -5,3 +5,11 @@ mysql:
   database: ""
   username: ""
   password: ""
+gamesettings:
+  maxplayer: 24
+  minplayer: 2
+  mapsize: 500 #in blocks
+  border:
+    active: true #this only activates the shrinking of the Border the mapsize sets the normal Border radius
+    startshrink: 120 #in seconds
+    minsize: 100 #in Blocks, (last size of Border)

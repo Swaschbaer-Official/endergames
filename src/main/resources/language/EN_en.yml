@@ -1,0 +1,13 @@
+# Usable tags for strings
+#
+# {player} = get the Players Name (example for the base.join it is the joined player!)
+#
+#
+#
+#
+#
+#
+base:
+  join: "&7Player&a {player} &7joined the Game."
+  leave: "&7Player&a {player} &7left the Game."
+error:
