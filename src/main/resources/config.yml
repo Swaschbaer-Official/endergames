@@ -1,0 +1,7 @@
+language: "DE_de"
+mysql:
+  ip: ""
+  port: ""
+  database: ""
+  username: ""
+  password: ""
