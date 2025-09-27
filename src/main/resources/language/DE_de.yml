@@ -1,13 +1,39 @@
 # Usable tags for strings
 #
 # {player} = get the Players Name (example for the base.join it is the joined player!)
-#
-#
-#
-#
-#
-#
+# ----------------- Below here for Scoreboard only! ----------------------------
+# {startingtime} = remaining time until it starts!
+# {remainingtime} = remaining ingame time
+# {maxonline} = maxplayers for the game
+# {online} = online players (be warry do not use this if you use a spectating feature maby i will recode when i want)
+# {state} = gamestate [waiting yes or no it istn realy gamestate i just statet it as that xD]
+# {kills} = Kills a player did
+# {kit} = kit a player is using
 base:
-  join: "&7Spieler&a {player} &7ist dem Spiel beigetreten."
-  leave: "&7Spieler&a {player} &7hat das Spiel verlassen."
+  join: "§7Spieler§a {player} §7ist dem Spiel beigetreten."
+  leave: "§7Spieler§a {player} §7hat das Spiel verlassen."
 error:
+  break:
+    lobby: "§cBitte unterlasse das abbauen in der Lobby!"
+scoreboard:
+  lobby-waiting:
+    - "§7Status: §a{state}"
+    - ""
+    - "§7Spieler: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  lobby-starting:
+    - "§7Status: §aStartet in {startingtime}"
+    - ""
+    - "§7Spieler: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  game-playing:
+    - "§7Kills: §a{kills}"
+    - "§7Übrige Zeit: §a{remainingtime}"
+    - ""
+    - "§7Spieler: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  game-shutdown:
+    - "§7Server fährt §crunter§7!"
+    - ""
+    - ""
+    - "§c Spiel ist vorbei!"

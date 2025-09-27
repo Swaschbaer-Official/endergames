@@ -9,6 +9,7 @@ import org.swaschbaer.endergames.Main;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -63,5 +64,8 @@ public class CustomConfigManager {
 
     public String getLanguageString(UUID uuid, String location, String folder){
         return getCustomConfig(Main.getInstance().getDataHandler().getLanguage(uuid.toString()), folder).getString(location);
+    }
+    public List<String> getLanguageArray(UUID uuid, String location, String folder){
+        return (List<String>) getCustomConfig(Main.getInstance().getDataHandler().getLanguage(uuid.toString()), folder).getList(location);
     }
 }

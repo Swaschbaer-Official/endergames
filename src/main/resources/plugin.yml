@@ -2,7 +2,7 @@ name: SW-Endergames
 version: '0.0.1'
 main: org.swaschbaer.endergames.Main
 api-version: '1.21'
-prefix: [ ACRL ]
+prefix: [ SW ]
 authors: [ Swaschbaer ]
-description: AracleSystems
+description: Endergames by Swaschbaer
 website: swaschbaer.de

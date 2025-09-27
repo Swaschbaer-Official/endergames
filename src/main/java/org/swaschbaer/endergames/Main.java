@@ -1,25 +1,49 @@
 package org.swaschbaer.endergames;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.swaschbaer.endergames.cloudnet.Initialize;
 import org.swaschbaer.endergames.config.CustomConfigManager;
 import org.swaschbaer.endergames.config.DataHandler;
+import org.swaschbaer.endergames.features.events.InteractionEvents;
+import org.swaschbaer.endergames.features.events.PlayerjoinEvent;
+import org.swaschbaer.endergames.features.events.PlayerquitEvent;
+import org.swaschbaer.endergames.features.managers.GameTime;
+import org.swaschbaer.endergames.features.managers.Kitregistry;
+import org.swaschbaer.endergames.features.managers.Scoreboardmanager;
 
 import java.io.File;
+import java.util.*;
 
 public final class Main extends JavaPlugin {
+    // Cloudnet & Plugin initialiser
     private Initialize cloudnet;
-    public Boolean ingame;
-    public String langstate;
     private static Main instance;
+    private Kitregistry kitregistry;
     private CustomConfigManager customConfigManager;
     private DataHandler dataHandler;
+    // Game Initialiser
+    private Scoreboardmanager scoreboardmanager;
+    public Boolean ingame = false;
+    public String state = "waiting";
+    public String langstate;
+    private static GameTime gametime;
+    // Variable stats for visualiser
+    public Integer startingtime;
+    public Integer ingametime;
+
 
     @Override
     public void onEnable() {
-
         instance = this;
+        startingtime = Main.getInstance().getConfig().getInt("gamesettings.starttime");
+        ingametime = Main.getInstance().getConfig().getInt("gamesettings.gametime");
+        gametime = new GameTime();
+        kitregistry = new Kitregistry();
+        scoreboardmanager = new Scoreboardmanager();
         cloudnet = new Initialize(this);
         customConfigManager = new CustomConfigManager(this);
         dataHandler = new DataHandler(this);
@@ -42,6 +66,10 @@ public final class Main extends JavaPlugin {
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+        registerEvent(new PlayerjoinEvent(), this);
+        registerEvent(new PlayerquitEvent(), this);
+        registerEvent(new InteractionEvents(), this);
+        Bukkit.getServer().setMotd("waiting.....");
     }
 
     private void saveLanguageFile(String fileName) {
@@ -58,6 +86,37 @@ public final class Main extends JavaPlugin {
         }
     }
 
+    public static List<String> applyPlaceholders(List<String> lines, Player p) {
+        List<String> result = new ArrayList<>();
+
+        for (String line : lines) {
+            String replaced = line;
+
+            replaced = replaced.replace("{online}", String.valueOf(Bukkit.getOnlinePlayers().size()));
+            replaced = replaced.replace("{maxonline}", String.valueOf(Main.getInstance().getConfig().getInt("gamesettings.maxplayer")));
+            replaced = replaced.replace("{state}", getInstance().state);
+            replaced = replaced.replace("{kit}", getInstance().getKitregistry().get(p.getUniqueId()));
+            replaced = replaced.replace("{kills}", getInstance().getKitregistry().get(p.getUniqueId()));
+            replaced = replaced.replace("{startingtime}", Main.getInstance().startingtime.toString());
+            replaced = replaced.replace("{remainingtime}", getInstance().ingametime.toString());
+            result.add(replaced);
+        }
+
+        return result;
+    }
+
+
+    private void registerEvent(Listener listener, Plugin plugin) {
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+    }
+
+    public Scoreboardmanager getScoreboardmanager() {
+        return scoreboardmanager;
+    }
+    public Kitregistry getKitregistry() {
+        return kitregistry;
+    }
+
     @Override
     public void onDisable() {
 
@@ -65,6 +124,9 @@ public final class Main extends JavaPlugin {
 
     public static Main getInstance() {
         return instance;
+    }
+    public static GameTime getGameTime(){
+        return gametime;
     }
 
     public CustomConfigManager getCustomConfigManager() {

@@ -6,6 +6,8 @@ mysql:
   username: ""
   password: ""
 gamesettings:
+  starttime: 30
+  gametime: 600
   maxplayer: 24
   minplayer: 2
   mapsize: 500 #in blocks

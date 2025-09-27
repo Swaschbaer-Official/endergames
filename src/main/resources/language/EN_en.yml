@@ -1,13 +1,38 @@
 # Usable tags for strings
 #
 # {player} = get the Players Name (example for the base.join it is the joined player!)
-#
-#
-#
-#
-#
-#
+# ----------------- Below here for Scoreboard only! ----------------------------
+# {remainingtime} = remaining ingame time
+# {maxonline} = maxplayers for the game
+# {online} = online players (be warry do not use this if you use a spectating feature maby i will recode when i want)
+# {state} = gamestate [waiting yes or no it istn realy gamestate i just statet it as that xD]
+# {kills} = Kills a player did
+# {kit} = kit a player is using
 base:
-  join: "&7Player&a {player} &7joined the Game."
+  join: "§7Player§a {player} §7joined the Game."
   leave: "&7Player&a {player} &7left the Game."
 error:
+  break:
+    lobby: "§7Please do not break things in the Lobby."
+scoreboard:
+  lobby-waiting:
+    - "§7Status: §a{state}"
+    - ""
+    - "§7Player: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  lobby-starting:
+    - "§7Status: §aStarting in {startingtime}"
+    - ""
+    - "§7Player: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  game-playing:
+    - "§7Kills: §a{kills}"
+    - "§7Remaining Time: §a{remainingtime}"
+    - ""
+    - "§7Player: §a{online}§7/§a{maxonline}"
+    - "§7Kit: §a{kit}"
+  game-shutdown:
+    - "§7Server is §cShuting Down§7!"
+    - ""
+    - ""
+    - "§c Game is done"

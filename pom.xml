@@ -135,33 +135,51 @@
 
     <!-- Dependencies -->
     <dependencies>
-        <!-- CloudNet Core-Abhängigkeiten -->
         <dependency>
             <groupId>eu.cloudnetservice.cloudnet</groupId>
-            <artifactId>driver</artifactId>
-            <version>4.0.0-RC11.2</version>
+            <artifactId>driver-api</artifactId>
+            <version>4.0.0-RC14</version>
         </dependency>
         <dependency>
             <groupId>eu.cloudnetservice.cloudnet</groupId>
             <artifactId>platform-inject-api</artifactId>
-            <version>4.0.0-RC11.2</version>
+            <version>4.0.0-RC14</version>
         </dependency>
         <dependency>
             <groupId>eu.cloudnetservice.cloudnet</groupId>
-            <artifactId>wrapper-jvm</artifactId>
-            <version>4.0.0-RC11.2</version>
+            <artifactId>bridge-api</artifactId>
+            <version>4.0.0-RC14</version>
         </dependency>
+
+        <!-- *** Implementierung: wird ins Plugin-JAR geshadet (mit Exclusions) *** -->
         <dependency>
-            <groupId>net.dmulloy2</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>5.4.0</version>
+            <groupId>eu.cloudnetservice.cloudnet</groupId>
+            <artifactId>driver</artifactId>
+            <version>4.0.0-RC14</version>
+            <exclusions>
+                <exclusion><groupId>com.google.guava</groupId><artifactId>guava</artifactId></exclusion>
+                <exclusion><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId></exclusion>
+                <exclusion><groupId>org.joml</groupId><artifactId>joml</artifactId></exclusion>
+                <exclusion><groupId>net.md-5</groupId><artifactId>bungeecord-chat</artifactId></exclusion>
+                <exclusion><groupId>org.yaml</groupId><artifactId>snakeyaml</artifactId></exclusion>
+                <exclusion><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId></exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>eu.cloudnetservice.cloudnet</groupId>
             <artifactId>bridge</artifactId>
-            <version>4.0.0-RC11.2</version>
+            <version>4.0.0-RC14</version>
+            <exclusions>
+                <exclusion><groupId>com.google.guava</groupId><artifactId>guava</artifactId></exclusion>
+                <exclusion><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId></exclusion>
+                <exclusion><groupId>org.joml</groupId><artifactId>joml</artifactId></exclusion>
+                <exclusion><groupId>net.md-5</groupId><artifactId>bungeecord-chat</artifactId></exclusion>
+                <exclusion><groupId>org.yaml</groupId><artifactId>snakeyaml</artifactId></exclusion>
+                <exclusion><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId></exclusion>
+            </exclusions>
         </dependency>
-        <!-- Spigot/Bukkit-API -->
+
+        <!-- Spigot API bleibt provided -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -169,9 +187,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>eu.cloudnetservice.cloudnet</groupId>
-            <artifactId>node</artifactId>
-            <version>4.0.0-RC11.2</version>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

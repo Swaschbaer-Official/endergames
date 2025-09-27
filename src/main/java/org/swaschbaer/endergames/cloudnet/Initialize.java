@@ -22,7 +22,7 @@ public class Initialize {
     public void initalizeBridge(){
         cloudServer = InjectionLayer.boot().instance(BridgeServiceHelper.class);
         serviceRegistery = InjectionLayer.boot().instance(ServiceRegistry.class);
-        pLayerManager = serviceRegistery.firstProvider(PlayerManager.class);
+        pLayerManager = serviceRegistery.defaultInstance(PlayerManager.class);
     }
 
     public void InitalizeServiceProvider(){
