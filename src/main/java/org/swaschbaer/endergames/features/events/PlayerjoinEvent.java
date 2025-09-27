@@ -14,31 +14,36 @@ import static org.swaschbaer.endergames.Main.applyPlaceholders;
 
 
 public class PlayerjoinEvent implements Listener {
-    public List<String> array;
-    private boolean startet = false;
+
+    private boolean lobbyRunning = false;
+
     @EventHandler
     public void onjoin(PlayerJoinEvent e) {
-        Main.getInstance().getKitregistry().put(e.getPlayer().getUniqueId(), "default");
         e.setJoinMessage(null);
-        Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-            String Join = Main.getInstance().getCustomConfigManager().getLanguageString(player.getUniqueId(), "base.join", "language");
-            Join = Join.replace("{player}", e.getPlayer().getDisplayName());
-            player.sendMessage(Join);
-            Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
-                    Player p = (Player) e.getPlayer();
-                    if(!startet) {
-                        Main.getInstance().getScoreboardmanager().updateScoreboard(player, "scoreboard.lobby-waiting");
+        Main.getInstance().getKitregistry().put(e.getPlayer().getUniqueId(), "default");
+
+        // Join-Message an alle (lokalisiert)
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            String joinMsg = Main.getInstance().getCustomConfigManager()
+                    .getLanguageString(pl.getUniqueId(), "base.join", "language")
+                    .replace("{player}", e.getPlayer().getDisplayName());
+            pl.sendMessage(joinMsg);
+
+            // Scoreboard: warten-Ansicht
+            Main.getInstance().getScoreboardmanager().updateScoreboard(pl, "scoreboard.lobby-waiting");
+        }
+
+        // Countdown nur starten, wenn genug Spieler und noch nicht laufend
+        if (Bukkit.getOnlinePlayers().size() >= Main.getInstance().getConfig().getInt("gamesettings.minplayer", 2)) {
+            Main.getGameTime().startLobbyCountdown(); // hat Guard intern
+            lobbyRunning = true;
+        } else {
+            // zu wenig Spieler → sicherstellen, dass Lobby-Status / Timer resettet ist
+            if (lobbyRunning) {
+                Main.getGameTime().resetAll();
+                lobbyRunning = false;
             }
-                    if(Bukkit.getServer().getOnlinePlayers().size() >= 2){
-                        Main.getGameTime().starttimer(player);
-                        startet = true;
-                    } else if (startet){
-                        Main.getGameTime().resettimer(player);
-                        startet = false;
-                    }
-                    }, 20L, 20L);
-        });
+        }
     }
-
-
 }
+

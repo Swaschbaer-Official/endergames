@@ -31,10 +31,6 @@ public class Scoreboardmanager {
         }
                 );
 
-
-
-
-        // Scoreboard dem Spieler zuweisen
         player.setScoreboard(scoreboard);
     }
 }

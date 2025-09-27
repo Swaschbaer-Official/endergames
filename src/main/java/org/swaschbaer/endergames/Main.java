@@ -8,12 +8,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.swaschbaer.endergames.cloudnet.Initialize;
 import org.swaschbaer.endergames.config.CustomConfigManager;
 import org.swaschbaer.endergames.config.DataHandler;
+import org.swaschbaer.endergames.features.events.EnderChestInteractionListener;
 import org.swaschbaer.endergames.features.events.InteractionEvents;
 import org.swaschbaer.endergames.features.events.PlayerjoinEvent;
 import org.swaschbaer.endergames.features.events.PlayerquitEvent;
-import org.swaschbaer.endergames.features.managers.GameTime;
-import org.swaschbaer.endergames.features.managers.Kitregistry;
-import org.swaschbaer.endergames.features.managers.Scoreboardmanager;
+import org.swaschbaer.endergames.features.managers.*;
 
 import java.io.File;
 import java.util.*;
@@ -68,7 +67,9 @@ public final class Main extends JavaPlugin {
         }
         registerEvent(new PlayerjoinEvent(), this);
         registerEvent(new PlayerquitEvent(), this);
-        registerEvent(new InteractionEvents(), this);
+        registerEvent(new InteractionEvents(this), this);
+        Main Main;
+        Main = this;
         Bukkit.getServer().setMotd("waiting.....");
     }
 
@@ -87,22 +88,36 @@ public final class Main extends JavaPlugin {
     }
 
     public static List<String> applyPlaceholders(List<String> lines, Player p) {
-        List<String> result = new ArrayList<>();
+        if (lines == null || lines.isEmpty()) return java.util.Collections.emptyList();
+
+        List<String> out = new ArrayList<>(lines.size());
+
+        // sichere Werte holen
+        int online = Bukkit.getOnlinePlayers().size();
+        int maxOnline = Main.getInstance().getConfig().getInt("gamesettings.maxplayer", 0);
+        String state = String.valueOf(Main.getInstance().state == null ? "waiting" : Main.getInstance().state);
+
+        String kit = Main.getInstance().getKitregistry().get(p.getUniqueId());
+        // Wenn du eine Kill-Map hast, nimm sie hier. Sonst 0:
+        int kills = 0; // z.B. Main.getInstance().getKillMap().getOrDefault(p.getUniqueId(), 0);
+
+        String startTime = String.valueOf(Main.getInstance().startingtime);
+        String ingameTime = String.valueOf(Main.getInstance().ingametime);
 
         for (String line : lines) {
-            String replaced = line;
-
-            replaced = replaced.replace("{online}", String.valueOf(Bukkit.getOnlinePlayers().size()));
-            replaced = replaced.replace("{maxonline}", String.valueOf(Main.getInstance().getConfig().getInt("gamesettings.maxplayer")));
-            replaced = replaced.replace("{state}", getInstance().state);
-            replaced = replaced.replace("{kit}", getInstance().getKitregistry().get(p.getUniqueId()));
-            replaced = replaced.replace("{kills}", getInstance().getKitregistry().get(p.getUniqueId()));
-            replaced = replaced.replace("{startingtime}", Main.getInstance().startingtime.toString());
-            replaced = replaced.replace("{remainingtime}", getInstance().ingametime.toString());
-            result.add(replaced);
+            if (line == null) continue;
+            String r = line
+                    .replace("{player}", p.getName())
+                    .replace("{online}", String.valueOf(online))
+                    .replace("{maxonline}", String.valueOf(maxOnline))
+                    .replace("{state}", state)
+                    .replace("{kit}", kit)
+                    .replace("{kills}", String.valueOf(kills))
+                    .replace("{startingtime}", startTime)
+                    .replace("{remainingtime}", ingameTime);
+            out.add(r);
         }
-
-        return result;
+        return out;
     }
 
 
