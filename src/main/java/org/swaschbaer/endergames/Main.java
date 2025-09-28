@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.swaschbaer.endergames.cloudnet.Initialize;
 import org.swaschbaer.endergames.config.CustomConfigManager;
 import org.swaschbaer.endergames.config.DataHandler;
-import org.swaschbaer.endergames.features.events.EnderChestInteractionListener;
 import org.swaschbaer.endergames.features.events.InteractionEvents;
 import org.swaschbaer.endergames.features.events.PlayerjoinEvent;
 import org.swaschbaer.endergames.features.events.PlayerquitEvent;
@@ -25,11 +24,10 @@ public final class Main extends JavaPlugin {
     private CustomConfigManager customConfigManager;
     private DataHandler dataHandler;
     // Game Initialiser
+    private GameManager gamemanager;
     private Scoreboardmanager scoreboardmanager;
     public Boolean ingame = false;
     public String state = "waiting";
-    public String langstate;
-    private static GameTime gametime;
     // Variable stats for visualiser
     public Integer startingtime;
     public Integer ingametime;
@@ -38,9 +36,9 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        gamemanager = new GameManager();
         startingtime = Main.getInstance().getConfig().getInt("gamesettings.starttime");
         ingametime = Main.getInstance().getConfig().getInt("gamesettings.gametime");
-        gametime = new GameTime();
         kitregistry = new Kitregistry();
         scoreboardmanager = new Scoreboardmanager();
         cloudnet = new Initialize(this);
@@ -67,10 +65,24 @@ public final class Main extends JavaPlugin {
         }
         registerEvent(new PlayerjoinEvent(), this);
         registerEvent(new PlayerquitEvent(), this);
-        registerEvent(new InteractionEvents(this), this);
+        registerEvent(new InteractionEvents(), this);
         Main Main;
         Main = this;
         Bukkit.getServer().setMotd("waiting.....");
+    }
+
+    private void saveDataFile(String fileName, String folder) {
+        File langFolder = new File(getDataFolder(), folder); // plugins/MeinPlugin/language/
+        File langFile = new File(langFolder, fileName);
+
+        if (!langFolder.exists()) {
+            langFolder.mkdirs(); // Erstelle den language-Ordner falls er fehlt
+        }
+
+        if (!langFile.exists()) {
+            saveResource("language/" + fileName, false); // Kopiere Datei aus JAR in den Plugin-Ordner
+            getLogger().info("Erstelle Standard-Sprachdatei: " + fileName);
+        }
     }
 
     private void saveLanguageFile(String fileName) {
@@ -140,12 +152,12 @@ public final class Main extends JavaPlugin {
     public static Main getInstance() {
         return instance;
     }
-    public static GameTime getGameTime(){
-        return gametime;
-    }
 
     public CustomConfigManager getCustomConfigManager() {
         return customConfigManager;
+    }
+    public GameManager getGamemanager(){
+        return gamemanager;
     }
 
     public Initialize getCloudNetServices(){

@@ -7,11 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.swaschbaer.endergames.Main;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.swaschbaer.endergames.Main.applyPlaceholders;
-
 
 public class PlayerjoinEvent implements Listener {
 
@@ -34,13 +29,11 @@ public class PlayerjoinEvent implements Listener {
         }
 
         // Countdown nur starten, wenn genug Spieler und noch nicht laufend
-        if (Bukkit.getOnlinePlayers().size() >= Main.getInstance().getConfig().getInt("gamesettings.minplayer", 2)) {
-            Main.getGameTime().startLobbyCountdown(); // hat Guard intern
+        if (Bukkit.getOnlinePlayers().size() >= Main.getInstance().getConfig().getInt("gamesettings.minplayer", 2)) {// hat Guard intern
             lobbyRunning = true;
+            Main.getInstance().getGamemanager().starttimer();
         } else {
-            // zu wenig Spieler → sicherstellen, dass Lobby-Status / Timer resettet ist
             if (lobbyRunning) {
-                Main.getGameTime().resetAll();
                 lobbyRunning = false;
             }
         }
