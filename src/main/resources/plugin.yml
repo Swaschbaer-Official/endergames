@@ -6,3 +6,7 @@ prefix: [ SW ]
 authors: [ Swaschbaer ]
 description: Endergames by Swaschbaer
 website: swaschbaer.de
+commands:
+  start:
+    description: to start the game
+    permission: swaschaber.endergames.commands.start

@@ -12,6 +12,7 @@
 base:
   join: "§7Spieler§a {player} §7ist dem Spiel beigetreten."
   leave: "§7Spieler§a {player} §7hat das Spiel verlassen."
+  startcommand: "&7Spiel wird force gestartet"
 error:
   break:
     lobby: "§cBitte unterlasse das abbauen in der Lobby!"

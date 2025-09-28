@@ -5,111 +5,22 @@ mysql:
   database: ""
   username: ""
   password: ""
-
 gamesettings:
   starttime: 30
-  gametime: 600
+  gametime: 3600
   maxplayer: 24
   minplayer: 2
-  mapsize: 100
+  mapsize: 500
   landscan:
     step: 32            # Rasterabstand (je größer, desto schneller/grober)
     sample_radius: 192  # Radius für die Biome-Stichprobe um einen Kandidaten
     search_radius: 2048 # wie weit um 0/0 gesucht wird
     max_ocean_ratio: 0.15
-  world_name: ""   # oder "endergames", nur Kleinbuchstaben/Zahlen/_-./
   pregen:
     enabled: true
-    spawn_chunk_radius: 2
+    spawn_chunk_radius: 4
     batch_chunks: 32
-  spawns:
-    min_distance: 16.0
   border:
     active: true
     startshrink: 120
     minsize: 100
-  loot:
-    # Empfehlung für Gameplay-Flow:
-    inventory_size: 27
-    rolls_per_chest: 5
-    chunk_density: 0.18
-    max_chests: 140
-    min_distance: 12.0
-    # Rarities (falls du eigene willst, gern überschreiben)
-    rarities:
-      COMMON: { weight: 1.0,  color: "&7" }
-      UNCOMMON: { weight: 0.7,  color: "&a" }
-      RARE: { weight: 0.4,  color: "&9" }
-      EPIC: { weight: 0.18, color: "&5" }
-      LEGENDARY: { weight: 0.06, color: "&6" }
-    items:
-      # --- Essen & Heilung (Common / Uncommon) ---
-      - { material: BREAD,            min: 2,  max: 6,  weight: 1.10, rarity: COMMON }
-      - { material: COOKED_BEEF,      min: 1,  max: 3,  weight: 1.00, rarity: COMMON }
-      - { material: COOKED_CHICKEN,   min: 1,  max: 3,  weight: 0.95, rarity: COMMON }
-      - { material: COOKED_PORKCHOP,  min: 1,  max: 3,  weight: 0.95, rarity: COMMON }
-      - { material: APPLE,            min: 1,  max: 2,  weight: 0.90, rarity: COMMON }
-      - { material: CARROT,           min: 2,  max: 5,  weight: 0.80, rarity: COMMON }
-      - { material: COOKED_MUTTON,    min: 1,  max: 2,  weight: 0.75, rarity: UNCOMMON }
-      - { material: COOKED_SALMON,    min: 1,  max: 2,  weight: 0.65, rarity: UNCOMMON }
-      - { material: GOLDEN_CARROT,    min: 1,  max: 2,  weight: 0.30, rarity: RARE }
-      - { material: GOLDEN_APPLE,     min: 1,  max: 1,  weight: 0.12, rarity: EPIC, lore: [ "&6A quick lifesaver." ] }
-      - { material: MUSHROOM_STEW,    min: 1,  max: 1,  weight: 0.45, rarity: UNCOMMON }
-      # --- Grundwerkzeuge (Common / Uncommon) ---
-      - { material: WOODEN_SWORD,     min: 1,  max: 1,  weight: 0.70, rarity: COMMON }
-      - { material: STONE_SWORD,      min: 1,  max: 1,  weight: 0.55, rarity: UNCOMMON }
-      - { material: WOODEN_AXE,       min: 1,  max: 1,  weight: 0.60, rarity: COMMON }
-      - { material: STONE_AXE,        min: 1,  max: 1,  weight: 0.45, rarity: UNCOMMON }
-      - { material: SHIELD,           min: 1,  max: 1,  weight: 0.20, rarity: UNCOMMON }
-      # --- Bogen & Munition ---
-      - { material: BOW,              min: 1,  max: 1,  weight: 0.35, rarity: UNCOMMON,
-          enchants: [ { type: POWER, min: 1, max: 2 }, { type: UNBREAKING, min: 1, max: 2 } ] }
-      - { material: ARROW,            min: 6,  max: 16, weight: 0.80, rarity: COMMON }
-      - { material: ARROW,            min: 10, max: 24, weight: 0.45, rarity: UNCOMMON }
-      - { material: CROSSBOW,         min: 1,  max: 1,  weight: 0.18, rarity: RARE,
-          enchants: [ { type: QUICK_CHARGE, min: 1, max: 2 }, { type: UNBREAKING, min: 1, max: 2 } ] }
-      # --- Nahkampf (Upgrades) ---
-      - { material: IRON_SWORD,       min: 1,  max: 1,  weight: 0.28, rarity: RARE,
-          enchants: [ { type: SHARPNESS, min: 1, max: 2 }, { type: UNBREAKING, min: 1, max: 2 } ],
-          unbreakable: false, hide_flags: true, name: "&fIron Blade" }
-      - { material: IRON_AXE,         min: 1,  max: 1,  weight: 0.22, rarity: RARE,
-          enchants: [ { type: SHARPNESS, min: 1, max: 1 }, { type: EFFICIENCY, min: 1, max: 2 } ] }
-      - { material: DIAMOND_SWORD,    min: 1,  max: 1,  weight: 0.04, rarity: EPIC,
-          enchants: [ { type: SHARPNESS, min: 2, max: 4 }, { type: UNBREAKING, min: 2, max: 3 } ],
-          name: "&bEdge of Ender" }
-      - { material: NETHERITE_SWORD,  min: 1,  max: 1,  weight: 0.01, rarity: LEGENDARY,
-          enchants: [ { type: SHARPNESS, min: 3, max: 5 }, { type: UNBREAKING, min: 3, max: 3 } ],
-          name: "&6Champion's Fang" }
-      # --- Rüstung (progressiv) ---
-      - { material: LEATHER_HELMET,   min: 1,  max: 1,  weight: 0.70, rarity: COMMON,
-          enchants: [ { type: PROTECTION, min: 1, max: 1 } ] }
-      - { material: LEATHER_CHESTPLATE, min: 1, max: 1, weight: 0.70, rarity: COMMON }
-      - { material: LEATHER_LEGGINGS, min: 1,  max: 1,  weight: 0.70, rarity: COMMON }
-      - { material: LEATHER_BOOTS,    min: 1,  max: 1,  weight: 0.70, rarity: COMMON }
-      - { material: CHAINMAIL_CHESTPLATE, min: 1, max: 1, weight: 0.40, rarity: UNCOMMON }
-      - { material: CHAINMAIL_LEGGINGS,   min: 1, max: 1, weight: 0.40, rarity: UNCOMMON }
-      - { material: CHAINMAIL_BOOTS,      min: 1, max: 1, weight: 0.40, rarity: UNCOMMON }
-      - { material: IRON_HELMET,      min: 1,  max: 1,  weight: 0.28, rarity: RARE }
-      - { material: IRON_CHESTPLATE,  min: 1,  max: 1,  weight: 0.22, rarity: RARE }
-      - { material: IRON_LEGGINGS,    min: 1,  max: 1,  weight: 0.24, rarity: RARE }
-      - { material: IRON_BOOTS,       min: 1,  max: 1,  weight: 0.26, rarity: RARE }
-      - { material: DIAMOND_HELMET,   min: 1,  max: 1,  weight: 0.05, rarity: EPIC }
-      - { material: DIAMOND_BOOTS,    min: 1,  max: 1,  weight: 0.05, rarity: EPIC }
-      # --- Wurf-/Utility ---
-      - { material: SNOWBALL,         min: 4,  max: 12, weight: 0.55, rarity: COMMON }
-      - { material: EGG,              min: 3,  max: 8,  weight: 0.45, rarity: COMMON }
-      - { material: FISHING_ROD,      min: 1,  max: 1,  weight: 0.35, rarity: UNCOMMON,
-          enchants: [ { type: UNBREAKING, min: 1, max: 2 }, { type: LURE, min: 1, max: 2 } ] }
-      - { material: FLINT_AND_STEEL,  min: 1,  max: 1,  weight: 0.18, rarity: UNCOMMON, lore: [ "&7Light it up." ] }
-      - { material: ENDER_PEARL,      min: 1,  max: 2,  weight: 0.12, rarity: RARE }
-      - { material: TNT,              min: 1,  max: 2,  weight: 0.10, rarity: RARE }
-      - { material: LAVA_BUCKET,      min: 1,  max: 1,  weight: 0.06, rarity: EPIC }
-      - { material: WATER_BUCKET,     min: 1,  max: 1,  weight: 0.16, rarity: UNCOMMON }
-      # --- Pfeil-Varianten (wenn erlaubt) ---
-      - { material: TIPPED_ARROW,     min: 4,  max: 8,  weight: 0.12, rarity: RARE, lore: [ "&dRandom effect" ] }
-      - { material: SPECTRAL_ARROW,   min: 4,  max: 8,  weight: 0.10, rarity: RARE }
-      # --- „Oh Sh*t“-Items (selten, aber spielentscheidend) ---
-      - { material: ENCHANTED_GOLDEN_APPLE, min: 1, max: 1, weight: 0.005, rarity: LEGENDARY, lore: [ "&6Don't waste it." ] }
-      - { material: CROSSBOW,         min: 1,  max: 1,  weight: 0.05, rarity: EPIC,
-          enchants: [ { type: MULTISHOT, min: 1, max: 1 }, { type: QUICK_CHARGE, min: 2, max: 3 } ],
-          name: "&5Stormbinder" }

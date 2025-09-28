@@ -8,10 +8,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.swaschbaer.endergames.cloudnet.Initialize;
 import org.swaschbaer.endergames.config.CustomConfigManager;
 import org.swaschbaer.endergames.config.DataHandler;
+import org.swaschbaer.endergames.features.commands.StartCommand;
+import org.swaschbaer.endergames.features.compass.CompassManager;
+import org.swaschbaer.endergames.features.death.DeathScreenManager;
 import org.swaschbaer.endergames.features.events.InteractionEvents;
 import org.swaschbaer.endergames.features.events.PlayerjoinEvent;
 import org.swaschbaer.endergames.features.events.PlayerquitEvent;
+import org.swaschbaer.endergames.features.loot.LootListener;
+import org.swaschbaer.endergames.features.loot.LootManager;
 import org.swaschbaer.endergames.features.managers.*;
+import org.swaschbaer.endergames.features.util.KitUtil;
+import org.swaschbaer.endergames.features.managers.WorldManager;
 
 import java.io.File;
 import java.util.*;
@@ -20,26 +27,29 @@ public final class Main extends JavaPlugin {
     // Cloudnet & Plugin initialiser
     private Initialize cloudnet;
     private static Main instance;
-    private Kitregistry kitregistry;
+    private KitUtil kitUtil;
     private CustomConfigManager customConfigManager;
     private DataHandler dataHandler;
-    // Game Initialiser
     private GameManager gamemanager;
     private Scoreboardmanager scoreboardmanager;
     public Boolean ingame = false;
     public String state = "waiting";
     // Variable stats for visualiser
+    public Map<Player, Integer> kills = new HashMap<>();
     public Integer startingtime;
     public Integer ingametime;
+    private CompassManager compassManager;
 
 
     @Override
     public void onEnable() {
         instance = this;
+        compassManager = new CompassManager(this);
         gamemanager = new GameManager();
         startingtime = Main.getInstance().getConfig().getInt("gamesettings.starttime");
         ingametime = Main.getInstance().getConfig().getInt("gamesettings.gametime");
-        kitregistry = new Kitregistry();
+        kitUtil = new KitUtil();
+        // Game Initialiser
         scoreboardmanager = new Scoreboardmanager();
         cloudnet = new Initialize(this);
         customConfigManager = new CustomConfigManager(this);
@@ -66,9 +76,17 @@ public final class Main extends JavaPlugin {
         registerEvent(new PlayerjoinEvent(), this);
         registerEvent(new PlayerquitEvent(), this);
         registerEvent(new InteractionEvents(), this);
-        Main Main;
-        Main = this;
+        getCommand("start").setExecutor(new StartCommand());
+        getCommand("start").setTabCompleter(new StartCommand());
         Bukkit.getServer().setMotd("waiting.....");
+        WorldManager.initOnStartup(this);
+        LootManager.load();
+        getServer().getPluginManager().registerEvents(new LootListener(this), this);
+        CompassManager compassMgr = new CompassManager(this);
+        getServer().getPluginManager().registerEvents(compassMgr, this);
+        DeathScreenManager deadMgr = new DeathScreenManager(this);
+        getServer().getPluginManager().registerEvents(deadMgr, this);
+
     }
 
     private void saveDataFile(String fileName, String folder) {
@@ -101,21 +119,13 @@ public final class Main extends JavaPlugin {
 
     public static List<String> applyPlaceholders(List<String> lines, Player p) {
         if (lines == null || lines.isEmpty()) return java.util.Collections.emptyList();
-
         List<String> out = new ArrayList<>(lines.size());
-
-        // sichere Werte holen
         int online = Bukkit.getOnlinePlayers().size();
         int maxOnline = Main.getInstance().getConfig().getInt("gamesettings.maxplayer", 0);
         String state = String.valueOf(Main.getInstance().state == null ? "waiting" : Main.getInstance().state);
-
         String kit = Main.getInstance().getKitregistry().get(p.getUniqueId());
-        // Wenn du eine Kill-Map hast, nimm sie hier. Sonst 0:
-        int kills = 0; // z.B. Main.getInstance().getKillMap().getOrDefault(p.getUniqueId(), 0);
-
-        String startTime = String.valueOf(Main.getInstance().startingtime);
-        String ingameTime = String.valueOf(Main.getInstance().ingametime);
-
+        int startTime = (Main.getInstance().startingtime);
+        int ingameTime = (Main.getInstance().ingametime);
         for (String line : lines) {
             if (line == null) continue;
             String r = line
@@ -124,13 +134,28 @@ public final class Main extends JavaPlugin {
                     .replace("{maxonline}", String.valueOf(maxOnline))
                     .replace("{state}", state)
                     .replace("{kit}", kit)
-                    .replace("{kills}", String.valueOf(kills))
-                    .replace("{startingtime}", startTime)
-                    .replace("{remainingtime}", ingameTime);
+                    .replace("{kills}", Main.getInstance().kills.get(p).toString())
+                    .replace("{startingtime}", formatTime(startTime))
+                    .replace("{remainingtime}", formatTime(ingameTime));
             out.add(r);
         }
         return out;
     }
+
+    public static String formatTime(int totalSeconds) {
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else if (minutes > 0) {
+            return String.format("%02d:%02d", minutes, seconds);
+        } else {
+            return String.format("%02d", seconds);
+        }
+    }
+
 
 
     private void registerEvent(Listener listener, Plugin plugin) {
@@ -140,8 +165,8 @@ public final class Main extends JavaPlugin {
     public Scoreboardmanager getScoreboardmanager() {
         return scoreboardmanager;
     }
-    public Kitregistry getKitregistry() {
-        return kitregistry;
+    public KitUtil getKitregistry() {
+        return kitUtil;
     }
 
     @Override
@@ -166,5 +191,10 @@ public final class Main extends JavaPlugin {
 
     public DataHandler getDataHandler(){
         return dataHandler;
+    }
+
+    public CompassManager getCompassManager() {
+
+        return compassManager;
     }
 }

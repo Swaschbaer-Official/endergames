@@ -16,5 +16,9 @@ public class PlayerquitEvent implements Listener {
             Join = Join.replace("{player}", e.getPlayer().getDisplayName());
             player.sendMessage(Join);
         });
+
+        if(Main.getInstance().getGamemanager().activeplayers.size() == 1){
+            Main.getInstance().getGamemanager().endGame(false);
+        }
     }
 }

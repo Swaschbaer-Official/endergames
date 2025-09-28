@@ -1,11 +1,10 @@
-package org.swaschbaer.endergames.features.managers;
+package org.swaschbaer.endergames.features.util;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class Kitregistry {
+public class KitUtil {
     private final Map<UUID, String> kit = new HashMap<>();
 
     public void put(Player player, String string) {

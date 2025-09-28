@@ -1,6 +1,8 @@
 package org.swaschbaer.endergames.features.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +16,9 @@ public class PlayerjoinEvent implements Listener {
 
     @EventHandler
     public void onjoin(PlayerJoinEvent e) {
+        e.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
+        e.getPlayer().setGameMode(GameMode.ADVENTURE);
+        Bukkit.getWorld("world").setDifficulty(Difficulty.PEACEFUL);
         e.setJoinMessage(null);
         Main.getInstance().getKitregistry().put(e.getPlayer().getUniqueId(), "default");
 
@@ -23,20 +28,21 @@ public class PlayerjoinEvent implements Listener {
                     .getLanguageString(pl.getUniqueId(), "base.join", "language")
                     .replace("{player}", e.getPlayer().getDisplayName());
             pl.sendMessage(joinMsg);
-
-            // Scoreboard: warten-Ansicht
             Main.getInstance().getScoreboardmanager().updateScoreboard(pl, "scoreboard.lobby-waiting");
         }
 
-        // Countdown nur starten, wenn genug Spieler und noch nicht laufend
-        if (Bukkit.getOnlinePlayers().size() >= Main.getInstance().getConfig().getInt("gamesettings.minplayer", 2)) {// hat Guard intern
-            lobbyRunning = true;
-            Main.getInstance().getGamemanager().starttimer();
+        if (Bukkit.getOnlinePlayers().size() >= Main.getInstance().getConfig().getInt("gamesettings.minplayer", 2)) {
+            if (!lobbyRunning) { // nur wenn Timer noch nicht läuft
+                lobbyRunning = true;
+                Main.getInstance().getGamemanager().starttimer();
+            }
         } else {
             if (lobbyRunning) {
+                Main.getInstance().getGamemanager().reset();
                 lobbyRunning = false;
             }
         }
+
     }
 }
 
